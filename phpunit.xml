@@ -1,0 +1,8 @@
+<!-- phpunit.xml -->
+<phpunit bootstrap="tests/bootstrap.php">
+    <testsuites>
+        <testsuite name="Integration">
+            <directory>./src/Tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

@@ -1,0 +1,34 @@
+{
+    "name": "lhd/light-hook-deploy",
+    "description": "Light Hook Deploy service for automated deployments using webhooks.",
+    "type": "project",
+    "license": "Apache-2.0",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Gabriel Parra",
+            "email": "gparrac.dev@gmail.com"
+        },
+        {
+            "name": "Cristian Blanco",
+            "email": "cristianjmb10@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "slim/slim": "4.*",
+        "nyholm/psr7": "^1.8",
+        "nyholm/psr7-server": "^1.1",
+        "guzzlehttp/guzzle": "^7.8",
+        "vlucas/phpdotenv": "^5.6",
+        "monolog/monolog": "^3.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lhd\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.2"
+    }
+}
