@@ -48,3 +48,4 @@ Thumbs.db
 .phpunit.result.cache
 .env
 /Deployments/*.php
+/Scripts/*.sh
