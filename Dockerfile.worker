@@ -1,0 +1,20 @@
+FROM php:8.2-fpm
+
+# Instalar dependencias necesarias y Composer
+RUN apt update \
+    && apt install -y zlib1g-dev g++ git libicu-dev zip libzip-dev zip libpq-dev \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install intl opcache pdo pdo_pgsql \
+    && pecl install apcu \
+    && docker-php-ext-enable apcu \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install zip
+
+# RUN yes '' | pecl install mongodb \
+#     && docker-php-ext-enable mongodb \
+#     && docker-php-ext-install zip pdo_mysql
+# Establecer el directorio de trabajo
+WORKDIR /var/www/html
+
+# Establecer el comando de inicio del contenedor
+CMD ["php-fpm"]
