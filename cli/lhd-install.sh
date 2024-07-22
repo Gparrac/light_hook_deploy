@@ -15,6 +15,7 @@ fi
 USERNAME=$1
 SERVICE_PATH=$(dirname $(dirname $(realpath $0)))
 SCRIPTS_PATH="$SERVICE_PATH/scripts"
+SYSTEM_FILE="$SERVICE_PATH/src/Config/server.php"
 
 # User creation or verification
 echo "* User creation or verification"
@@ -61,6 +62,19 @@ echo "* Checking FTP access"
 FTP_OPEN=$(netstat -tuln | grep ':21' | grep -w "$USERNAME")
 if [ -n "$FTP_OPEN" ]; then
     echo "  - Warning: FTP is open for $USERNAME. It is recommended to close FTP access for security reasons."
+fi
+
+# System.php
+if [ -f "$SYSTEM_FILE" ]; then
+    sed -i "s/^\s*'system_user'.*/    'system_user' => '$USERNAME',/" "$SYSTEM_FILE"
+else
+    cat <<EOL > "$SYSTEM_FILE"
+<?php
+return [
+    'system_user' => '$USERNAME',
+];
+?>
+EOL
 fi
 
 echo "Installation completed."
