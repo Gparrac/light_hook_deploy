@@ -1,17 +1,17 @@
 {
-    "name": "lhd/light-hook-deploy",
+    "name": "pipestream/light-hook-deploy",
     "description": "Light Hook Deploy service for automated deployments using webhooks.",
     "type": "project",
     "license": "Apache-2.0",
     "version": "1.0.0",
     "authors": [
         {
-            "name": "Gabriel Parra",
-            "email": "gparrac.dev@gmail.com"
-        },
-        {
             "name": "Cristian Blanco",
             "email": "cristianjmb10@gmail.com"
+        },
+        {
+            "name": "Gabriel Parra",
+            "email": "gparrac.dev@gmail.com"
         }
     ],
     "minimum-stability": "stable",
@@ -27,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Lhd\\": "src/"
+            "PipeLhd\\": "src/"
         }
     },
     "require-dev": {

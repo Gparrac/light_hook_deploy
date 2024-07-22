@@ -47,5 +47,6 @@ Thumbs.db
 /vendor/
 .phpunit.result.cache
 .env
-/Deployments/*.php
-/Scripts/*.sh
+/deployments/*.php
+/scripts/*.sh
+src/Config/keys.php
