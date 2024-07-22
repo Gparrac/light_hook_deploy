@@ -1,11 +1,11 @@
 <?php
 
-namespace Lhd\Middlewares;
+namespace PipeLhd\Middlewares;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
-use Lhd\Utils\ResponseHttp;
+use PipeLhd\Utils\ResponseHttp;
 use Psr\Log\LoggerInterface;
 
 class KeyMiddleware

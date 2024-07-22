@@ -1,6 +1,6 @@
 <?php
 
-namespace Lhd\Utils;
+namespace PipeLhd\Utils;
 
 use Nyholm\Psr7\Response;
 

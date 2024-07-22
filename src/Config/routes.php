@@ -1,9 +1,9 @@
 <?php
 
 use Slim\App;
-use Lhd\Controllers\Controller;
-use Lhd\Middlewares\CustomMiddleware;
-use Lhd\Middlewares\KeyMiddleware;
+use PipeLhd\Controllers\Controller;
+use PipeLhd\Middlewares\CustomMiddleware;
+use PipeLhd\Middlewares\KeyMiddleware;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
 return function (App $app) {

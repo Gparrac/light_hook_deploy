@@ -1,6 +1,6 @@
 <?php
 
-namespace Lhd\Services;
+namespace PipeLhd\Services;
 
 class CustomService
 {

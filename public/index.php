@@ -7,7 +7,7 @@ use Dotenv\Dotenv;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
-use Lhd\Middlewares\LogMiddleware;
+use PipeLhd\Middlewares\LogMiddleware;
 
 require __DIR__ . '/../vendor/autoload.php';
 
