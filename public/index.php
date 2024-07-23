@@ -9,8 +9,9 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use PipeLhd\Middlewares\LogMiddleware;
 
-require __DIR__ . '/../vendor/autoload.php';
+define('ROOT_PATH', dirname(__DIR__, 1));
 
+require __DIR__ . '/../vendor/autoload.php';
 // Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
@@ -19,7 +20,7 @@ $dotenv->load();
 $app = AppFactory::create();
 
 // Configure the logger
-$logFile = __DIR__ . '/../Logs/app.log';
+$logFile = __DIR__ . '/../storage/logs/app.log';
 $logger = new Logger('app');
 $logger->pushHandler(new StreamHandler($logFile, Level::Debug));
 

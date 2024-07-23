@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use PipeLhd\Utils\ResponseHttp;
 
 class LogMiddleware
 {
@@ -25,11 +26,10 @@ class LogMiddleware
             if ($statusCode != 200) {
                 $this->logger->error('Error Response: ' . $response->getReasonPhrase() . ' - Status Code: ' . $statusCode);
             }
-            } catch (\Throwable $e) {
-                $this->logger->error('Error system: ' . $e->getMessage());
-                return $response->withStatus(500);
-            }
-
+        } catch (\Throwable $e) {
+            $this->logger->error('Error system: ' . $e->getMessage());
+            $response = ResponseHttp::generateJson((object)['error' => $e->getMessage()], 500);
+        }
         return $response;
     }
 }

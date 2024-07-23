@@ -1,18 +1,25 @@
 <?php
 
 use Slim\App;
-use PipeLhd\Controllers\Controller;
-use PipeLhd\Middlewares\CustomMiddleware;
+
 use PipeLhd\Middlewares\KeyMiddleware;
+use PipeLhd\Middlewares\RateLimitMiddleware;
+use PipeLhd\Middlewares\CheckDeploymentProjectMiddleware;
+use PipeLhd\Middlewares\CheckScriptsMiddleware;
+use PipeLhd\Middlewares\CheckDirectoryMiddleware;
+
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
+use PipeLhd\Controllers\DeployController;
+use PipeLhd\Controllers\RollbackController;
 
 return function (App $app) {
     $app->group('/v1', function (Group $group){
-        $group->get('/deploy', [Controller::class, 'example']) // services pre_deploy, deploy, post_deploy
-                // middleware deploy
-                
-              ->add(CustomMiddleware::class);
-        $group->get('/rollback', [Controller::class, 'example']); //services rollback, post_deploy
-                // pre_deploy y rollback middleware;
-    })->add(KeyMiddleware::class);
+        $group->post('/deploy', DeployController::class);
+        $group->post('/rollback', RollbackController::class);
+    })
+    ->add(CheckDirectoryMiddleware::class)
+    ->add(CheckScriptsMiddleware::class)
+    ->add(CheckDeploymentProjectMiddleware::class)
+    ->add(KeyMiddleware::class)
+    ->add(RateLimitMiddleware::class);
 };
