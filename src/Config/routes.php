@@ -13,7 +13,7 @@ use PipeLhd\Controllers\DeployController;
 use PipeLhd\Controllers\RollbackController;
 
 return function (App $app) {
-    $app->group('/v1', function (Group $group){
+    $app->group('/lhd', function (Group $group){
         $group->post('/deploy', DeployController::class);
         $group->post('/rollback', RollbackController::class);
     })
