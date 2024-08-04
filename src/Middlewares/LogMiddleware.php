@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use PipeLhd\Utils\ResponseHttp;
+use PipeLhd\Config\ErrorCodes;
 
 class LogMiddleware
 {
@@ -28,7 +29,12 @@ class LogMiddleware
             }
         } catch (\Throwable $e) {
             $this->logger->error('Error system: ' . $e->getMessage());
-            $response = ResponseHttp::generateJson((object)['error' => $e->getMessage()], 500);
+            $response = ResponseHttp::generateJson(
+                ["error" => $e->getMessage()],
+                500,
+                false,
+                ErrorCodes::UNEXPECTED_ERROR
+            );
         }
         return $response;
     }

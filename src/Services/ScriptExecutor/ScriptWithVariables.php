@@ -42,7 +42,7 @@ class ScriptWithVariables implements ScriptExecutorInterface
         // Remove the temporary file
         unlink($tempScriptPath);
 
-        if ($output === null || trim($output) === '' || strpos($output, "error:") !== false) {
+        if ($output === null || trim($output) === '' || preg_match('/error:/i', $output)) {
             return [
                 'status' => 'error',
                 'message' => "Script execution failed: $output"

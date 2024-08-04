@@ -7,9 +7,15 @@ print_message() {
     echo -e "\n\e[${COLOR}m${ICON} ${MESSAGE}\e[0m\n"
 }
 
+# Ensure the script is run with sudo
+if [ "$(id -u)" -ne 0 ]; then
+    print_message "31;1" "❗" " Error: Please run the script with sudo."
+    exit 1
+fi
+
 # Ensure correct usage
-if [ "$#" -lt 1 ]; then
-    print_message "31;1" "❗" " Usage: $0 <project_name> [directory_path]"
+if [ "$#" -lt 2 ]; then
+    print_message "31;1" "❗" " Usage: $0 <project_name> <directory_path>"
     exit 1
 fi
 
@@ -18,9 +24,13 @@ DIRECTORY_PATH=$2
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 DEPLOYMENTS_DIR="$SCRIPT_DIR/../deployments"
+SYMLINKS_DIR="$DEPLOYMENTS_DIR/symlinks"
 PROJECTS_DIR="$DEPLOYMENTS_DIR/projects"
 DEPLOYMENT_FILE="$DEPLOYMENTS_DIR/deployments.php"
 KEYS_FILE="$SCRIPT_DIR/../src/Config/keys.php"
+
+# Ensure the symlinks directory exists
+mkdir -p "$SYMLINKS_DIR"
 
 # Check if the project is listed in keys.php
 if ! php -r "\$keys = require('$KEYS_FILE'); exit(array_key_exists('$PROJECT_NAME', \$keys) ? 0 : 1);" ; then
@@ -29,15 +39,20 @@ if ! php -r "\$keys = require('$KEYS_FILE'); exit(array_key_exists('$PROJECT_NAM
     exit 1
 fi
 
-mkdir -p "$PROJECTS_DIR"
+# Check if the directory exists
+if [ ! -d "$DIRECTORY_PATH" ]; then
+    print_message "31;1" "❗" " Error: Directory '$DIRECTORY_PATH' does not exist."
+    exit 1
+fi
 
-# Create the PHP content for the project-specific deployment file
+# Create the project-specific deployment file
+mkdir -p "$PROJECTS_DIR"
 PROJECT_FILE="$PROJECTS_DIR/$PROJECT_NAME.php"
 PROJECT_PHP_CODE=$(cat <<EOF
 <?php
 // Deployment configuration for project '$PROJECT_NAME'
 return [
-    'directory' => '${DIRECTORY_PATH:-/default/directory/}',
+    'directory' => 'symlinks/$PROJECT_NAME', // -> $DIRECTORY_PATH
     'lifecycle' => [
         'pre_deploy' => [
             // 'pre_deploy_script1.sh',
@@ -91,33 +106,21 @@ fi
 echo "$PHP_CODE" > "$DEPLOYMENT_FILE"
 print_message "32;1" "✅" " Updated deployments file: $DEPLOYMENT_FILE"
 
-# Check if directory path is provided
-if [ -n "$DIRECTORY_PATH" ]; then
-    # Check if the directory exists
-    if [ -d "$DIRECTORY_PATH" ]; then
-        # Check if script is run with sudo
-        if [ "$(id -u)" -ne 0 ]; then
-            print_message "31;1" "❗" " Error: Directory path provided. Please run the script with sudo."
-            exit 1
-        fi
+# Create a symbolic link for the project directory
+SYMLINK="$SYMLINKS_DIR/$PROJECT_NAME"
 
-        # Check if the configuration file exists and has the 'system_user' key
-        CONFIG_FILE="$SCRIPT_DIR/../src/Config/server.php"
-        if [ ! -f "$CONFIG_FILE" ] || ! php -r "\$config = require('$CONFIG_FILE'); exit(isset(\$config['system_user']) ? 0 : 1);" ; then
-            print_message "33;1" "⚠️" " Warning: Configuration file $CONFIG_FILE not found or does not contain 'system_user'."
-            print_message "33;1" "ℹ️" "  Please run lhd-install.sh to set up the system configuration properly."
-            exit 1
-        fi
-
-        # Change ownership of the directory
-        chown :www-data "$DIRECTORY_PATH"
-        print_message "32;1" "✅" " Ownership of '$DIRECTORY_PATH' changed to group 'www-data'."
-    else
-        print_message "31;1" "❗" " Error: Directory '$DIRECTORY_PATH' does not exist."
-        exit 1
-    fi
-else
-    print_message "33;1" "ℹ️" "  Note: No directory path provided. Please ensure that the directory set in the project configuration is in the 'www-data' group with 'chown :www-data /path/directory/project'."
+# Remove existing symbolic link if it exists
+if [ -L "$SYMLINK" ]; then
+    rm "$SYMLINK"
+    print_message "33;1" "ℹ️" " Existing symbolic link removed: $SYMLINK"
 fi
+
+ln -s "$DIRECTORY_PATH" "$SYMLINK"
+print_message "32;1" "✅" " Symbolic link created: $SYMLINK -> $DIRECTORY_PATH"
+
+# Change ownership of the directory and symbolic link
+chown -R :www-data "$DIRECTORY_PATH"
+chown :www-data "$SYMLINK"
+print_message "32;1" "✅" " Ownership of '$DIRECTORY_PATH' and '$SYMLINK' changed to group 'www-data'."
 
 print_message "32;1" "✅" " Deployment structure for project '$PROJECT_NAME' has been created."

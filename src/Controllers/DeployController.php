@@ -21,7 +21,7 @@ class DeployController
     {
         $projectConfig = $request->getAttribute('project_config');
         $deployVariables = $projectConfig['deploy_variables'] ?: [];
-        $directory = $projectConfig['directory'];
+        $directory = ROOT_PATH . '/deployments/' . $projectConfig['directory'];
 
         // Execute pre-deploy scripts
         $preDeployResult = $this->lifecycleScriptService->executeScripts($projectConfig['lifecycle']['pre_deploy'], $deployVariables, $directory);
@@ -30,7 +30,7 @@ class DeployController
         ];
 
         if ($preDeployResult['status'] === 'error') {
-            return ResponseHttp::generateJson((object)$responseData, 500);
+            return ResponseHttp::generateJson($responseData, 500);
         }
 
         // Execute deploy scripts
@@ -38,13 +38,13 @@ class DeployController
         $responseData['deploy'] = $deployResult;
 
         if ($deployResult['status'] === 'error') {
-            return ResponseHttp::generateJson((object)$responseData, 500);
+            return ResponseHttp::generateJson($responseData, 500);
         }
 
         // Execute post-deploy scripts
         $postDeployResult = $this->lifecycleScriptService->executeScripts($projectConfig['lifecycle']['post_deploy'], $deployVariables, $directory);
         $responseData['post_deploy'] = $postDeployResult;
 
-        return ResponseHttp::generateJson((object)$responseData, 200);
+        return ResponseHttp::generateJson($responseData, 200);
     }
 }

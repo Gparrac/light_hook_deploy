@@ -14,15 +14,15 @@ class CheckDirectoryMiddleware
         $projectConfig = $request->getAttribute('project_config');
         
         if (!isset($projectConfig['directory'])) {
-            return ResponseHttp::generateJson((object)[
+            return ResponseHttp::generateJson([
                 "error" => "Directory not specified in project_config"
             ], 400);
         }
 
-        $directory = $projectConfig['directory'];
+        $directory = ROOT_PATH . '/deployments/' . $projectConfig['directory'];
 
         if (!is_dir($directory) || !is_readable($directory)) {
-            return ResponseHttp::generateJson((object)[
+            return ResponseHttp::generateJson([
                 "error" => "Directory not accessible",
                 "directory" => $directory
             ], 400);

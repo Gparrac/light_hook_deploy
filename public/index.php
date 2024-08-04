@@ -31,9 +31,9 @@ $app->getContainer()['logger'] = $logger;
 $app->add(new LogMiddleware($logger));
 
 // Error Middlewares
-$displayErrorDetails = getenv('DISPLAY_ERROR_DETAILS') === 'true' || false;
-$logErrors = getenv('LOG_ERRORS') === 'true' || true;
-$logErrorDetails = getenv('LOG_ERROR_DETAILS') === 'true' || true;
+$displayErrorDetails = $_ENV['DISPLAY_ERROR_DETAILS'] === 'true' || false;
+$logErrors = $_ENV['LOG_ERRORS'] === 'true' || true;
+$logErrorDetails = $_ENV['LOG_ERROR_DETAILS'] === 'true' || true;
 
 $errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, $logErrors, $logErrorDetails);
 

@@ -22,6 +22,7 @@ class RollbackController
         $projectConfig = $request->getAttribute('project_config');
         $deployVariables = $projectConfig['deploy_variables'] ?: [];
         $directory = $projectConfig['directory'];
+        $directory = ROOT_PATH . '/deployments/' . $projectConfig['directory'];
 
         // Execute rollback scripts
         $rollbackResult = $this->lifecycleScriptService->executeScripts($projectConfig['lifecycle']['rollback'], $deployVariables, $directory);
@@ -30,7 +31,7 @@ class RollbackController
         ];
 
         if ($rollbackResult['status'] === 'error') {
-            return ResponseHttp::generateJson((object)$responseData, 500);
+            return ResponseHttp::generateJson($responseData, 500);
         }
 
         // Execute post-deploy scripts
@@ -38,9 +39,9 @@ class RollbackController
         $responseData['post_deploy'] = $postDeployResult;
 
         if ($postDeployResult['status'] === 'error') {
-            return ResponseHttp::generateJson((object)$responseData, 500);
+            return ResponseHttp::generateJson($responseData, 500);
         }
 
-        return ResponseHttp::generateJson((object)$responseData, 200);
+        return ResponseHttp::generateJson($responseData, 200);
     }
 }

@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
 use PipeLhd\Utils\ResponseHttp;
+use PipeLhd\Exceptions as CustomException;
 
 class CheckDeploymentProjectMiddleware
 {
@@ -20,19 +21,19 @@ class CheckDeploymentProjectMiddleware
             $projects = include $deploymentsFile;
 
             if (!array_key_exists($projectName, $projects)) {
-                return ResponseHttp::generateJson((object)["error" => "Project is not registered"], 400);
+                throw new CustomException\ProjectNotFoundException("Project is not registered");
             }
 
             $projectFilePath = $deploymentsDir . $projects[$projectName];
 
             if (!file_exists($projectFilePath)) {
-                return ResponseHttp::generateJson((object)["error" => "Project configuration file does not exist"], 400);
+                throw new CustomException\ConfigFileNotFoundException("Project configuration file does not exist");
             }
 
             $projectConfig = include $projectFilePath;
 
             if (!is_array($projectConfig)) {
-                return ResponseHttp::generateJson((object)["error" => "Invalid project configuration"], 400);
+                throw new CustomException\InvalidConfigException("Invalid project configuration");
             }
 
             $request = $request->withAttribute('project_config', $projectConfig);
@@ -41,8 +42,13 @@ class CheckDeploymentProjectMiddleware
 
             return $response;
 
-        } catch (\Exception $e) {
-            return ResponseHttp::generateJson((object)["error" => $e->getMessage()], 400);
+        } catch (CustomException\DeploymentException $e) {
+            return ResponseHttp::generateJson(
+                ["error" => $e->getMessage()],
+                400,
+                false,
+                $e->getCode()
+            );
         }
     }
 }
