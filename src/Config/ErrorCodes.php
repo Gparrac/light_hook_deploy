@@ -19,7 +19,12 @@ class ErrorCodes
 
     // Errors releated to Scripts
     public const MISSING_SCRIPTS = 'MISSING_SCRIPTS'; 
+
+    // Errors releated to Directory
+    const DIRECTORY_NOT_SPECIFIED = 'DIRECTORY_NOT_SPECIFIED';
+    const DIRECTORY_NOT_ACCESSIBLE = 'DIRECTORY_NOT_ACCESSIBLE';
     
     // Generic Codes
     const UNEXPECTED_ERROR = 'UNEXPECTED_ERROR';
+    const SCRIPT_EXECUTION_FAILED = 'SCRIPT_EXECUTION_FAILED';
 }
