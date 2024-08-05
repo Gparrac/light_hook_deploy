@@ -20,8 +20,12 @@ class CheckDirectoryMiddleware
             }
     
             $directory = ROOT_PATH . '/deployments/' . $projectConfig['directory'];
+
+            $command = "if [ -d \"$directory\" ] && [ -r \"$directory\" ]; then echo 'Accessible'; else echo 'Not Accessible'; fi";
+            $result = shell_exec($command);
+            $result = trim($result);
     
-            if (!is_dir($directory) || !is_readable($directory)) {
+            if ($result === 'Not Accessible') {
                 throw new CustomException\DirectoryNotAccessibleException("Directory not accessible: " . $directory);
             }
     
