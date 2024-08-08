@@ -1,6 +1,6 @@
 <?php
 
-namespace PipeLhd\Middlewares;
+namespace PipeLhd\Middlewares\Specific;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;

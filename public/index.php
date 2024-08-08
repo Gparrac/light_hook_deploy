@@ -1,13 +1,8 @@
 <?php
 
 use Slim\Factory\AppFactory;
-use Slim\Exception\HttpNotFoundException;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Dotenv\Dotenv;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-use Monolog\Level;
-use PipeLhd\Middlewares\LogMiddleware;
+use DI\ContainerBuilder;
 
 define('ROOT_PATH', dirname(__DIR__, 1));
 define('DEPLOYMENT_PATH', ROOT_PATH . '/deployments/');
@@ -18,19 +13,30 @@ require __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
+$maxExecutionTime = $_ENV['MAX_EXECUTION_TIME'] ?? 30; // Default to 30 seconds
+ini_set('max_execution_time', $maxExecutionTime);
+
+//Instantiate PHP-DI ContainerBuilder
+$containerBuilder = new ContainerBuilder();
+
+// // Set up providers
+$providers = require ROOT_PATH . '/src/Config/providers.php';
+$providers($containerBuilder);
+
+// Build Container instance
+$container = $containerBuilder->build();
+
 // Create the Slim application
+AppFactory::setContainer($container);
 $app = AppFactory::create();
 
-// Configure the logger
-$logFile = __DIR__ . '/../storage/logs/app.log';
-$logger = new Logger('app');
-$logger->pushHandler(new StreamHandler($logFile, Level::Debug));
+// Load Middlewares
+$middleware = require ROOT_PATH. '/src/Config/middlewares.php';
+$middleware($app);
 
-// logger to the app's container
-$app->getContainer()['logger'] = $logger;
-
-// Global middleware for logging
-$app->add(new LogMiddleware($logger));
+// Load Routes
+$routes = require ROOT_PATH. '/src/Config/routes.php';
+$routes($app);
 
 // Error Middlewares
 $displayErrorDetails = $_ENV['DISPLAY_ERROR_DETAILS'] === 'true' || false;
@@ -38,19 +44,5 @@ $logErrors = $_ENV['LOG_ERRORS'] === 'true' || true;
 $logErrorDetails = $_ENV['LOG_ERROR_DETAILS'] === 'true' || true;
 
 $errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, $logErrors, $logErrorDetails);
-
-// Configure the 404 error handler
-$errorMiddleware->setErrorHandler(HttpNotFoundException::class, function (Request $request, $exception) use ($logger, $app) {
-    $response = $app->getResponseFactory()->createResponse(404);
-    $response->getBody()->write(file_get_contents(__DIR__ . '/resources/not_found.html'));
-
-    // Log the 404 error
-    $logger->warning('404 Not Found: ' . $request->getUri());
-
-    return $response;
-});
-
-// Load routes
-(require __DIR__ . '/../src/Config/routes.php')($app);
 
 $app->run();

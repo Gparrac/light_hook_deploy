@@ -2,7 +2,7 @@
 
 namespace PipeLhd\Utils;
 
-use Nyholm\Psr7\Response;
+use GuzzleHttp\Psr7\Response;
 
 class ResponseHttp
 {

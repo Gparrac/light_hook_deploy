@@ -9,7 +9,7 @@ services:
     working_dir: /var/www/html
     command: sh -c "composer install && php-fpm"
     networks:
-      - laravel
+      - lhd
   web:
     image: 'nginx:latest'
     ports:
@@ -22,7 +22,7 @@ services:
     links:
       - php-fpm
     networks:
-      - laravel
+      - lhd
 networks:
-  laravel:
+  lhd:
     driver: bridge
