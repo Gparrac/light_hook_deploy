@@ -3,7 +3,7 @@ namespace PipeLhd\Services\ScriptExecutor;
 
 class ScriptWithVariables implements ScriptExecutorInterface
 {
-    private $scriptsDir = ROOT_PATH . '/scripts/';
+    private $scriptsDir = DEPLOYMENT_PATH . 'scripts/';
 
     public function executeScript(string $script, array $deployVariables = [], string $projectDir = ROOT_PATH): array
     {
@@ -42,7 +42,7 @@ class ScriptWithVariables implements ScriptExecutorInterface
         // Remove the temporary file
         unlink($tempScriptPath);
 
-        if ($output === null || trim($output) === '' || preg_match('/error:/i', $output)) {
+        if ($output === null || trim($output) === '' || preg_match('/error_lhd/i', $output)) {
             return [
                 'status' => 'error',
                 'message' => "Script execution failed: $output"

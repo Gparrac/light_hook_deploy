@@ -25,10 +25,11 @@ class LogMiddleware
 
             $statusCode = $response->getStatusCode();
             if ($statusCode != 200) {
-                $this->logger->error('Error Response: ' . $response->getReasonPhrase() . ' - Status Code: ' . $statusCode);
+                $body = (string) $response->getBody();
+                $this->logger->error('Error Response: ' . $response->getReasonPhrase() . ' - Status Code: ' . $statusCode . ' - Body: ' . $body);
             }
         } catch (\Throwable $e) {
-            $this->logger->error('Error system: ' . $e->getMessage());
+            $this->logger->error('System Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
             $response = ResponseHttp::generateJson(
                 ["error" => $e->getMessage()],
                 500,

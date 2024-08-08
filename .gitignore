@@ -51,7 +51,7 @@ Thumbs.db
 deployments/*.php
 deployments/projects/*
 deployments/symlinks/*
+deployments/scripts/*.sh
 
-/scripts/*.sh
 src/Config/keys.php
 src/Config/server.php

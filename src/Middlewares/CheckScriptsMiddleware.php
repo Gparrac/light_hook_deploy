@@ -14,7 +14,7 @@ class CheckScriptsMiddleware
     {
         try {
             $projectConfig = $request->getAttribute('project_config');
-            $deploymentsDir = ROOT_PATH . '/scripts/';
+            $deploymentsDir = DEPLOYMENT_PATH . 'scripts/';
             
             $lifecycle = $projectConfig['lifecycle'];
 

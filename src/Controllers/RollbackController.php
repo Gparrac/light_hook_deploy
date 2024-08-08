@@ -25,7 +25,7 @@ class RollbackController
             $projectConfig = $request->getAttribute('project_config');
             $deployVariables = $projectConfig['deploy_variables'] ?: [];
             $directory = $projectConfig['directory'];
-            $directory = ROOT_PATH . '/deployments/' . $projectConfig['directory'];
+            $directory =  DEPLOYMENT_PATH . $projectConfig['directory'];
 
             // Execute rollback scripts
             $rollbackResult = $this->lifecycleScriptService->executeScripts($projectConfig['lifecycle']['rollback'], $deployVariables, $directory);

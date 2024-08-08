@@ -19,7 +19,7 @@ class CheckDirectoryMiddleware
                 throw new CustomException\DirectoryNotSpecifiedException("Directory not specified in project_config");
             }
     
-            $directory = ROOT_PATH . '/deployments/' . $projectConfig['directory'];
+            $directory = DEPLOYMENT_PATH . $projectConfig['directory'];
 
             $command = "if [ -d \"$directory\" ] && [ -r \"$directory\" ]; then echo 'Accessible'; else echo 'Not Accessible'; fi";
             $result = shell_exec($command);

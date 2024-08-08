@@ -23,7 +23,7 @@ class DeployController
         try {
             $projectConfig = $request->getAttribute('project_config');
             $deployVariables = $projectConfig['deploy_variables'] ?: [];
-            $directory = ROOT_PATH . '/deployments/' . $projectConfig['directory'];
+            $directory = DEPLOYMENT_PATH . $projectConfig['directory'];
     
             // Execute pre-deploy scripts
             $preDeployResult = $this->lifecycleScriptService->executeScripts($projectConfig['lifecycle']['pre_deploy'], $deployVariables, $directory);

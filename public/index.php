@@ -10,8 +10,10 @@ use Monolog\Level;
 use PipeLhd\Middlewares\LogMiddleware;
 
 define('ROOT_PATH', dirname(__DIR__, 1));
+define('DEPLOYMENT_PATH', ROOT_PATH . '/deployments/');
 
 require __DIR__ . '/../vendor/autoload.php';
+
 // Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();

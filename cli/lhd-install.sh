@@ -19,7 +19,7 @@ fi
 
 USERNAME=$1
 SERVICE_PATH=$(dirname $(dirname $(realpath $0)))
-SCRIPTS_PATH="$SERVICE_PATH/scripts"
+SCRIPTS_PATH="$SERVICE_PATH/deployments/scripts"
 SYSTEM_FILE="$SERVICE_PATH/src/Config/server.php"
 
 # User creation or verification
