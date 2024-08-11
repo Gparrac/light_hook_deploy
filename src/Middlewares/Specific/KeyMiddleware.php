@@ -20,7 +20,8 @@ class KeyMiddleware
             }
 
             $projects = include ROOT_PATH . '/src/Config/keys.php';
-            if (!isset($params['project']) || !array_key_exists($params['project'], $projects)) {
+
+            if (!is_array($projects) || !isset($params['project']) || !array_key_exists($params['project'], $projects)) {
                 throw new CustomException\ProjectAccessNotFoundException("Project access not found");
             }
 

@@ -28,14 +28,33 @@ SYMLINKS_DIR="$DEPLOYMENTS_DIR/symlinks"
 PROJECTS_DIR="$DEPLOYMENTS_DIR/projects"
 DEPLOYMENT_FILE="$DEPLOYMENTS_DIR/deployments.php"
 KEYS_FILE="$SCRIPT_DIR/../src/Config/keys.php"
+TOKENS_FILE="$SCRIPT_DIR/../src/Config/tokens.php"
 
 # Ensure the symlinks directory exists
 mkdir -p "$SYMLINKS_DIR"
 
-# Check if the project is listed in keys.php
-if ! php -r "\$keys = require('$KEYS_FILE'); exit(array_key_exists('$PROJECT_NAME', \$keys) ? 0 : 1);" ; then
-    print_message "31;1" "❗" " Error: Project '$PROJECT_NAME' is not listed in $KEYS_FILE."
-    print_message "33;1" "ℹ️" "  Please create the access key for this project using 'lhd-add-access-key.sh'."
+# Initialize flags for project presence
+project_in_keys=1
+project_in_tokens=1
+
+# Check if keys.php exists and contains the project
+if [ -f "$KEYS_FILE" ]; then
+    if php -r "\$keys = require('$KEYS_FILE'); exit(is_array(\$keys) && array_key_exists('$PROJECT_NAME', \$keys) ? 0 : 1);" ; then
+        project_in_keys=0
+    fi
+fi
+
+# Check if tokens.php exists and contains the project
+if [ -f "$TOKENS_FILE" ]; then
+    if php -r "\$tokens = require('$TOKENS_FILE'); exit(is_array(\$tokens) && array_key_exists('$PROJECT_NAME', \$tokens) ? 0 : 1);" ; then
+        project_in_tokens=0
+    fi
+fi
+
+# Check if the project is not listed in either file
+if [ "$project_in_keys" -eq 1 ] && [ "$project_in_tokens" -eq 1 ]; then
+    print_message "31;1" "❗" " Error: Project '$PROJECT_NAME' is not listed in $KEYS_FILE or $TOKENS_FILE."
+    print_message "33;1" "ℹ️" "  Please use 'lhd-add-access-key.sh' to create access keys or 'lhd-add-secret-token.sh' if you wish to use repository webhooks."
     exit 1
 fi
 

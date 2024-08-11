@@ -12,10 +12,11 @@ print_message() {
 # Check if keys.php exists
 if [ ! -f "$KEYS_FILE" ]; then
     print_message "31;1" "❗ Error: Keys file does not exist: $KEYS_FILE"
+    print_message "33;1" "ℹ️  Please, create a new access key for a new project with 'lhd-add-access-key.sh'."
     exit 1
 fi
 
-print_message "38;5;214" "📂 Registered Projects:"
+print_message "38;5;214" "📂 Registered Projects: Access Key"
 
 php -r "
     \$keys = require('$KEYS_FILE');

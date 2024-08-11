@@ -54,4 +54,5 @@ deployments/symlinks/*
 deployments/scripts/*.sh
 
 src/Config/keys.php
+src/Config/tokens.php
 src/Config/server.php
